@@ -1,203 +1,341 @@
 import { useState } from 'react';
-import { Layout, Menu, Card, Row, Col, Statistic, Table, Button, Space, Dropdown, Avatar, Input, Badge, DatePicker, Select, Modal, Form, message, Tabs } from 'antd';
-import { UserOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, TeamOutlined, FileTextOutlined, SettingOutlined, SearchOutlined, BellOutlined, CalendarOutlined, ClockCircleOutlined, CheckCircleOutlined, CloseCircleOutlined, HourglassOutlined, FileExcelOutlined, PrinterOutlined, PlusOutlined } from '@ant-design/icons';
-import 'antd/dist/reset.css';
 import './App.css';
 
-const { Header, Sider, Content } = Layout;
-const { RangePicker } = DatePicker;
-const { Option } = Select;
+const mockUsers = {
+  'employer@abrohr.com': { password: 'Employer@123', role: 'employer', name: 'Vikram Kumar', company: 'AbrO HR' },
+  'employee@abrohr.com': { password: 'Employee@123', role: 'employee', empId: 'EMP001', name: 'Priya Singh' }
+};
+
+const initialEmployees = [
+  { id: 'EMP001', name: 'Priya Singh', email: 'priya@abrohr.com', dept: 'Engineering', joinDate: '2024-01-15', status: 'Active' },
+  { id: 'EMP002', name: 'Rajesh Patel', email: 'rajesh@abrohr.com', dept: 'Marketing', joinDate: '2024-02-20', status: 'Active' },
+  { id: 'EMP003', name: 'Sneha Desai', email: 'sneha@abrohr.com', dept: 'HR', joinDate: '2024-03-10', status: 'Active' }
+];
 
 function App() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
   const [activePage, setActivePage] = useState('dashboard');
-  const [attendanceData, setAttendanceData] = useState([
-    { key: '1', empId: 'EMP001', name: 'John Doe', department: 'Engineering', status: 'Present', time: '09:15 AM', date: '10-Jan-2026' },
-    { key: '2', empId: 'EMP002', name: 'Jane Smith', department: 'HR', status: 'Present', time: '09:30 AM', date: '10-Jan-2026' },
-    { key: '3', empId: 'EMP003', name: 'Mike Johnson', department: 'Sales', status: 'Absent', time: '-', date: '10-Jan-2026' },
-    { key: '4', empId: 'EMP004', name: 'Sarah Williams', department: 'Engineering', status: 'On Leave', time: '-', date: '10-Jan-2026' },
-    { key: '5', empId: 'EMP005', name: 'Robert Brown', department: 'Finance', status: 'Late', time: '10:45 AM', date: '10-Jan-2026' },
-  ]);
+  const [employees, setEmployees] = useState(initialEmployees);
+  const [showModal, setShowModal] = useState(false);
+  const [newEmp, setNewEmp] = useState({ name: '', email: '', dept: '', joinDate: '' });
 
-  const attendanceColumns = [
-    { title: 'Emp ID', dataIndex: 'empId', key: 'empId', width: 100 },
-    { title: 'Name', dataIndex: 'name', key: 'name', width: 150 },
-    { title: 'Department', dataIndex: 'department', key: 'department', width: 130 },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      width: 120,
-      render: (status) => {
-        let color = 'green';
-        let icon = <CheckCircleOutlined />;
-        if (status === 'Absent') { color = 'red'; icon = <CloseCircleOutlined />; }
-        else if (status === 'On Leave') { color = 'orange'; icon = <HourglassOutlined />; }
-        else if (status === 'Late') { color = 'blue'; icon = <ClockCircleOutlined />; }
-        return <Badge icon={icon} text={status} color={color} />;
-      },
-    },
-    { title: 'Check-in', dataIndex: 'time', key: 'time', width: 120 },
-    { title: 'Date', dataIndex: 'date', key: 'date', width: 120 },
-  ];
-
-  const dashboardContent = (
-    <>
-      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
-        <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-            <Statistic
-              title="Present Today"
-              value={12}
-              suffix="/ 25"
-              valueStyle={{ color: '#52c41a' }}
-              prefix={<CheckCircleOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-            <Statistic
-              title="Absent Today"
-              value={3}
-              suffix="/ 25"
-              valueStyle={{ color: '#f5222d' }}
-              prefix={<CloseCircleOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-            <Statistic
-              title="On Leave"
-              value={5}
-              suffix="/ 25"
-              valueStyle={{ color: '#faad14' }}
-              prefix={<HourglassOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-            <Statistic
-              title="Late Arrivals"
-              value={2}
-              suffix="/ 25"
-              valueStyle={{ color: '#1890ff' }}
-              prefix={<ClockCircleOutlined />}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)', marginBottom: '24px' }}>
-        <div style={{ marginBottom: '20px' }}>
-          <Row gutter={16}>
-            <Col xs={24} sm={12} lg={8}>
-              <DatePicker.RangePicker style={{ width: '100%' }} placeholder={['Start Date', 'End Date']} />
-            </Col>
-            <Col xs={24} sm={12} lg={8}>
-              <Select placeholder="Filter by Department" style={{ width: '100%' }}>
-                <Option value="all">All Departments</Option>
-                <Option value="eng">Engineering</Option>
-                <Option value="hr">HR</Option>
-                <Option value="sales">Sales</Option>
-              </Select>
-            </Col>
-            <Col xs={24} sm={12} lg={8}>
-              <Input placeholder="Search employee..." prefix={<SearchOutlined />} />
-            </Col>
-          </Row>
-        </div>
-        <Table columns={attendanceColumns} dataSource={attendanceData} size="small" pagination={{ pageSize: 10 }} />
-      </Card>
-    </>
-  );
-
-  const analyticsContent = (
-    <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-      <h2>Analytics Coming Soon</h2>
-      <p>Detailed attendance analytics and reports will be available here.</p>
-    </Card>
-  );
-
-  const employeesContent = (
-    <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-      <div style={{ marginBottom: '20px' }}>
-        <Button type="primary" icon={<PlusOutlined />}>Add Employee</Button>
-      </div>
-      <Table
-        columns={[
-          { title: 'Emp ID', dataIndex: 'empId', key: 'empId' },
-          { title: 'Name', dataIndex: 'name', key: 'name' },
-          { title: 'Department', dataIndex: 'department', key: 'department' },
-          { title: 'Status', dataIndex: 'status', key: 'status' },
-        ]}
-        dataSource={attendanceData}
-        pagination={{ pageSize: 10 }}
-      />
-    </Card>
-  );
-
-  const settingsContent = (
-    <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-      <h2>Settings</h2>
-      <p>Settings page coming soon...</p>
-    </Card>
-  );
-
-  const renderContent = () => {
-    switch (activePage) {
-      case 'dashboard': return dashboardContent;
-      case 'analytics': return analyticsContent;
-      case 'employees': return employeesContent;
-      case 'settings': return settingsContent;
-      default: return dashboardContent;
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const user = mockUsers[email];
+    if (user && user.password === password) {
+      setIsLoggedIn(true);
+      setUserRole(user.role);
+      setCurrentUser(user);
+      setLoginError('');
+    } else {
+      setLoginError('Invalid credentials');
     }
   };
 
-  const menuItems = [
-    { key: 'dashboard', icon: <DashboardOutlined />, label: 'Dashboard', onClick: () => setActivePage('dashboard') },
-    { key: 'analytics', icon: <FileTextOutlined />, label: 'Analytics', onClick: () => setActivePage('analytics') },
-    { key: 'employees', icon: <TeamOutlined />, label: 'Employees', onClick: () => setActivePage('employees') },
-    { key: 'settings', icon: <SettingOutlined />, label: 'Settings', onClick: () => setActivePage('settings') },
-  ];
+  const addEmployee = () => {
+    if (newEmp.name && newEmp.email && newEmp.dept) {
+      const empId = `EMP${String(employees.length + 1).padStart(3, '0')}`;
+      setEmployees([...employees, { id: empId, ...newEmp, status: 'Active', joinDate: newEmp.joinDate || new Date().toISOString().split('T')[0] }]);
+      setNewEmp({ name: '', email: '', dept: '', joinDate: '' });
+      setShowModal(false);
+    }
+  };
 
+  // EMPLOYER DASHBOARD
+  if (isLoggedIn && userRole === 'employer') {
+    return (
+      <div className="app-container">
+        <aside className="sidebar">
+          <div className="logo">🏢 AbrO HR</div>
+          <nav className="nav-menu">
+            <button className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`} onClick={() => setActivePage('dashboard')}>📊 Dashboard</button>
+            <button className={`nav-item ${activePage === 'employees' ? 'active' : ''}`} onClick={() => setActivePage('employees')}>👥 Employees</button>
+            <button className={`nav-item ${activePage === 'attendance' ? 'active' : ''}`} onClick={() => setActivePage('attendance')}>✓ Attendance</button>
+            <button className={`nav-item ${activePage === 'reports' ? 'active' : ''}`} onClick={() => setActivePage('reports')}>📈 Reports</button>
+            <button className={`nav-item ${activePage === 'settings' ? 'active' : ''}`} onClick={() => setActivePage('settings')}>⚙️ Settings</button>
+          </nav>
+          <button className="logout-btn" onClick={() => { setIsLoggedIn(false); setUserRole(null); }}>Logout</button>
+        </aside>
+
+        <main className="main-content">
+          <header className="header">
+            <h1>Welcome, {currentUser?.name}! 👋</h1>
+            <div className="header-info">Employer • {employees.length} Employees</div>
+          </header>
+
+          {activePage === 'dashboard' && (
+            <div className="dashboard">
+              <div className="stats-grid">
+                <div className="stat-card present">
+                  <div className="stat-icon">✓</div>
+                  <h3>Present Today</h3>
+                  <p className="stat-value">2</p>
+                </div>
+                <div className="stat-card absent">
+                  <div className="stat-icon">✗</div>
+                  <h3>Absent</h3>
+                  <p className="stat-value">1</p>
+                </div>
+                <div className="stat-card total">
+                  <div className="stat-icon">👥</div>
+                  <h3>Total Staff</h3>
+                  <p className="stat-value">{employees.length}</p>
+                </div>
+                <div className="stat-card leaves">
+                  <div className="stat-icon">📭</div>
+                  <h3>On Leave</h3>
+                  <p className="stat-value">0</p>
+                </div>
+              </div>
+
+              <div className="content-box">
+                <h2>Quick Stats</h2>
+                <p>👥 Team Size: {employees.length} | 📅 Attendance Rate: 95% | 🎯 Today's Punch: 2</p>
+              </div>
+            </div>
+          )}
+
+          {activePage === 'employees' && (
+            <div className="employees-page">
+              <div className="page-header">
+                <h2>Employee Management</h2>
+                <button className="btn-primary" onClick={() => setShowModal(true)}>+ Add Employee</button>
+              </div>
+
+              {showModal && (
+                <div className="modal-overlay" onClick={() => setShowModal(false)}>
+                  <div className="modal" onClick={e => e.stopPropagation()}>
+                    <h2>Add New Employee</h2>
+                    <div className="form-group">
+                      <label>Full Name</label>
+                      <input type="text" value={newEmp.name} onChange={e => setNewEmp({...newEmp, name: e.target.value})} placeholder="Enter name" />
+                    </div>
+                    <div className="form-group">
+                      <label>Email</label>
+                      <input type="email" value={newEmp.email} onChange={e => setNewEmp({...newEmp, email: e.target.value})} placeholder="Enter email" />
+                    </div>
+                    <div className="form-group">
+                      <label>Department</label>
+                      <select value={newEmp.dept} onChange={e => setNewEmp({...newEmp, dept: e.target.value})}>
+                        <option value="">Select Department</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="HR">HR</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Sales">Sales</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Join Date</label>
+                      <input type="date" value={newEmp.joinDate} onChange={e => setNewEmp({...newEmp, joinDate: e.target.value})} />
+                    </div>
+                    <div className="modal-buttons">
+                      <button className="btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                      <button className="btn-primary" onClick={addEmployee}>Add Employee</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <table className="employees-table">
+                <thead>
+                  <tr>
+                    <th>Emp ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Join Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {employees.map(emp => (
+                    <tr key={emp.id}>
+                      <td><strong>{emp.id}</strong></td>
+                      <td>{emp.name}</td>
+                      <td>{emp.email}</td>
+                      <td>{emp.dept}</td>
+                      <td>{emp.joinDate}</td>
+                      <td><span className="badge active">{emp.status}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activePage === 'attendance' && (
+            <div className="content-box">
+              <h2>Attendance Management</h2>
+              <table className="employees-table">
+                <thead>
+                  <tr>
+                    <th>Emp ID</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {employees.slice(0, 3).map(emp => (
+                    <tr key={emp.id}>
+                      <td>{emp.id}</td>
+                      <td>{emp.name}</td>
+                      <td><span className="badge present">Present</span></td>
+                      <td>09:15 AM</td>
+                      <td>06:00 PM</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activePage === 'reports' && (
+            <div className="content-box">
+              <h2>Reports & Analytics</h2>
+              <p>📊 Attendance reports, department analytics, and trends coming soon...</p>
+            </div>
+          )}
+
+          {activePage === 'settings' && (
+            <div className="content-box">
+              <h2>Settings</h2>
+              <p>⚙️ Company settings, leave policies, and notifications...</p>
+            </div>
+          )}
+        </main>
+      </div>
+    );
+  }
+
+  // EMPLOYEE DASHBOARD
+  if (isLoggedIn && userRole === 'employee') {
+    return (
+      <div className="app-container">
+        <aside className="sidebar">
+          <div className="logo">🏢 AbrO HR</div>
+          <nav className="nav-menu">
+            <button className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`} onClick={() => setActivePage('dashboard')}>📊 Dashboard</button>
+            <button className={`nav-item ${activePage === 'attendance' ? 'active' : ''}`} onClick={() => setActivePage('attendance')}>✓ Attendance</button>
+            <button className={`nav-item ${activePage === 'leave' ? 'active' : ''}`} onClick={() => setActivePage('leave')}>📭 Leave</button>
+            <button className={`nav-item ${activePage === 'profile' ? 'active' : ''}`} onClick={() => setActivePage('profile')}>👤 Profile</button>
+          </nav>
+          <button className="logout-btn" onClick={() => { setIsLoggedIn(false); setUserRole(null); }}>Logout</button>
+        </aside>
+
+        <main className="main-content">
+          <header className="header">
+            <h1>Welcome, {currentUser?.name}! 👋</h1>
+            <div className="header-info">Employee • {currentUser?.empId}</div>
+          </header>
+
+          {activePage === 'dashboard' && (
+            <div className="dashboard">
+              <div className="stats-grid">
+                <div className="stat-card small-card">
+                  <h3>Today's Status</h3>
+                  <p className="stat-value">✓ Present</p>
+                </div>
+                <div className="stat-card small-card">
+                  <h3>Check-in</h3>
+                  <p className="stat-value">09:15 AM</p>
+                </div>
+                <div className="stat-card small-card">
+                  <h3>Working Hours</h3>
+                  <p className="stat-value">8h 45m</p>
+                </div>
+                <div className="stat-card small-card">
+                  <h3>Leaves Left</h3>
+                  <p className="stat-value">12</p>
+                </div>
+              </div>
+
+              <div className="quick-actions">
+                <button className="action-btn check-in">✓ Check In</button>
+                <button className="action-btn check-out">✗ Check Out</button>
+                <button className="action-btn request">📋 Request Leave</button>
+              </div>
+
+              <div className="content-box">
+                <h2>Recent Attendance</h2>
+                <p>📅 Jan 10: Present (09:15 - 06:00)</p>
+                <p>📅 Jan 9: Present (09:30 - 05:45)</p>
+              </div>
+            </div>
+          )}
+
+          {activePage === 'attendance' && (
+            <div className="content-box">
+              <h2>My Attendance</h2>
+              <p>📊 Attendance history and details...</p>
+            </div>
+          )}
+
+          {activePage === 'leave' && (
+            <div className="content-box">
+              <h2>Leave Management</h2>
+              <p>Leave Balance: Casual (8/12) | Sick (3/10) | Earned (12/20)</p>
+            </div>
+          )}
+
+          {activePage === 'profile' && (
+            <div className="content-box">
+              <h2>My Profile</h2>
+              <p>Employee ID: {currentUser?.empId}</p>
+              <p>Name: {currentUser?.name}</p>
+            </div>
+          )}
+        </main>
+      </div>
+    );
+  }
+
+  // LOGIN PAGE
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider trigger={null} collapsible collapsed={collapsed} width={220} style={{ background: '#001529' }}>
-        <div style={{ padding: '16px', textAlign: 'center' }}>
-          <h1 style={{ color: 'white', fontSize: '20px', fontWeight: 'bold', margin: 0 }}>AbrO HR</h1>
-          <p style={{ color: '#8c8c8c', fontSize: '12px', margin: '4px 0 0 0' }}>Employee Tracking</p>
+    <div className="login-page">
+      <div className="login-container">
+        <div className="login-box">
+          <h1>🏢 AbrO HR</h1>
+          <p className="subtitle">Employee Attendance & Management System</p>
+          
+          <form onSubmit={handleLogin}>
+            <div className="form-group">
+              <label>Email</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter email" />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" />
+            </div>
+            {loginError && <div className="error">{loginError}</div>}
+            <button type="submit" className="btn-login">Login</button>
+          </form
+
+
+          <div className="demo-credentials">
+            <h3>📝 Demo Credentials:</h3>
+            <div className="cred-box">
+              <p><strong>👔 Employer Account:</strong></p>
+              <p>📧 Email: <code>employer@abrohr.com</code></p>
+              <p>🔐 Password: <code>Employer@123</code></p>
+            </div>
+            <div className="cred-box">
+              <p><strong>👤 Employee Account:</strong></p>
+              <p>📧 Email: <code>employee@abrohr.com</code></p>
+              <p>🔐 Password: <code>Employee@123</code></p>
+            </div>
+          </div>
+            </div>
+          </div>
         </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={['dashboard']}
-          items={menuItems}
-          style={{ background: '#001529' }}
-        />
-      </Sider>
-      <Layout>
-        <Header style={{ background: '#fff', padding: '0 24px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{ fontSize: '18px' }}
-          />
-          <Space size="large">
-            <Button type="text" icon={<BellOutlined style={{ fontSize: '18px' }} />} />
-            <Avatar size="large" icon={<UserOutlined />} style={{ background: '#1890ff' }} />
-            <Button type="text" icon={<LogoutOutlined />} danger />
-          </Space>
-        </Header>
-        <Content style={{ margin: '24px', background: '#f5f5f5', borderRadius: '4px', padding: '24px' }}>
-          {renderContent()}
-        </Content>
-      </Layout>
-    </Layout>
-  );
+      </div>
+    );
 }
 
 export default App;
