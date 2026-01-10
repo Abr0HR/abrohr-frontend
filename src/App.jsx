@@ -1,219 +1,203 @@
 import { useState } from 'react';
-import { Users, Clock, BarChart3, Settings, LogOut, Menu, X, Home } from 'lucide-react';
+import { Layout, Menu, Card, Row, Col, Statistic, Table, Button, Space, Dropdown, Avatar, Input, Badge, DatePicker, Select, Modal, Form, message, Tabs } from 'antd';
+import { UserOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, TeamOutlined, FileTextOutlined, SettingOutlined, SearchOutlined, BellOutlined, CalendarOutlined, ClockCircleOutlined, CheckCircleOutlined, CloseCircleOutlined, HourglassOutlined, FileExcelOutlined, PrinterOutlined, PlusOutlined } from '@ant-design/icons';
+import 'antd/dist/reset.css';
+import './App.css';
+
+const { Header, Sider, Content } = Layout;
+const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [activePage, setActivePage] = useState('dashboard');
+  const [attendanceData, setAttendanceData] = useState([
+    { key: '1', empId: 'EMP001', name: 'John Doe', department: 'Engineering', status: 'Present', time: '09:15 AM', date: '10-Jan-2026' },
+    { key: '2', empId: 'EMP002', name: 'Jane Smith', department: 'HR', status: 'Present', time: '09:30 AM', date: '10-Jan-2026' },
+    { key: '3', empId: 'EMP003', name: 'Mike Johnson', department: 'Sales', status: 'Absent', time: '-', date: '10-Jan-2026' },
+    { key: '4', empId: 'EMP004', name: 'Sarah Williams', department: 'Engineering', status: 'On Leave', time: '-', date: '10-Jan-2026' },
+    { key: '5', empId: 'EMP005', name: 'Robert Brown', department: 'Finance', status: 'Late', time: '10:45 AM', date: '10-Jan-2026' },
+  ]);
+
+  const attendanceColumns = [
+    { title: 'Emp ID', dataIndex: 'empId', key: 'empId', width: 100 },
+    { title: 'Name', dataIndex: 'name', key: 'name', width: 150 },
+    { title: 'Department', dataIndex: 'department', key: 'department', width: 130 },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: 120,
+      render: (status) => {
+        let color = 'green';
+        let icon = <CheckCircleOutlined />;
+        if (status === 'Absent') { color = 'red'; icon = <CloseCircleOutlined />; }
+        else if (status === 'On Leave') { color = 'orange'; icon = <HourglassOutlined />; }
+        else if (status === 'Late') { color = 'blue'; icon = <ClockCircleOutlined />; }
+        return <Badge icon={icon} text={status} color={color} />;
+      },
+    },
+    { title: 'Check-in', dataIndex: 'time', key: 'time', width: 120 },
+    { title: 'Date', dataIndex: 'date', key: 'date', width: 120 },
+  ];
+
+  const dashboardContent = (
+    <>
+      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+        <Col xs={24} sm={12} lg={6}>
+          <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+            <Statistic
+              title="Present Today"
+              value={12}
+              suffix="/ 25"
+              valueStyle={{ color: '#52c41a' }}
+              prefix={<CheckCircleOutlined />}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+            <Statistic
+              title="Absent Today"
+              value={3}
+              suffix="/ 25"
+              valueStyle={{ color: '#f5222d' }}
+              prefix={<CloseCircleOutlined />}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+            <Statistic
+              title="On Leave"
+              value={5}
+              suffix="/ 25"
+              valueStyle={{ color: '#faad14' }}
+              prefix={<HourglassOutlined />}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+            <Statistic
+              title="Late Arrivals"
+              value={2}
+              suffix="/ 25"
+              valueStyle={{ color: '#1890ff' }}
+              prefix={<ClockCircleOutlined />}
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)', marginBottom: '24px' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <Row gutter={16}>
+            <Col xs={24} sm={12} lg={8}>
+              <DatePicker.RangePicker style={{ width: '100%' }} placeholder={['Start Date', 'End Date']} />
+            </Col>
+            <Col xs={24} sm={12} lg={8}>
+              <Select placeholder="Filter by Department" style={{ width: '100%' }}>
+                <Option value="all">All Departments</Option>
+                <Option value="eng">Engineering</Option>
+                <Option value="hr">HR</Option>
+                <Option value="sales">Sales</Option>
+              </Select>
+            </Col>
+            <Col xs={24} sm={12} lg={8}>
+              <Input placeholder="Search employee..." prefix={<SearchOutlined />} />
+            </Col>
+          </Row>
+        </div>
+        <Table columns={attendanceColumns} dataSource={attendanceData} size="small" pagination={{ pageSize: 10 }} />
+      </Card>
+    </>
+  );
+
+  const analyticsContent = (
+    <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+      <h2>Analytics Coming Soon</h2>
+      <p>Detailed attendance analytics and reports will be available here.</p>
+    </Card>
+  );
+
+  const employeesContent = (
+    <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+      <div style={{ marginBottom: '20px' }}>
+        <Button type="primary" icon={<PlusOutlined />}>Add Employee</Button>
+      </div>
+      <Table
+        columns={[
+          { title: 'Emp ID', dataIndex: 'empId', key: 'empId' },
+          { title: 'Name', dataIndex: 'name', key: 'name' },
+          { title: 'Department', dataIndex: 'department', key: 'department' },
+          { title: 'Status', dataIndex: 'status', key: 'status' },
+        ]}
+        dataSource={attendanceData}
+        pagination={{ pageSize: 10 }}
+      />
+    </Card>
+  );
+
+  const settingsContent = (
+    <Card bordered={false} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+      <h2>Settings</h2>
+      <p>Settings page coming soon...</p>
+    </Card>
+  );
+
+  const renderContent = () => {
+    switch (activePage) {
+      case 'dashboard': return dashboardContent;
+      case 'analytics': return analyticsContent;
+      case 'employees': return employeesContent;
+      case 'settings': return settingsContent;
+      default: return dashboardContent;
+    }
+  };
+
+  const menuItems = [
+    { key: 'dashboard', icon: <DashboardOutlined />, label: 'Dashboard', onClick: () => setActivePage('dashboard') },
+    { key: 'analytics', icon: <FileTextOutlined />, label: 'Analytics', onClick: () => setActivePage('analytics') },
+    { key: 'employees', icon: <TeamOutlined />, label: 'Employees', onClick: () => setActivePage('employees') },
+    { key: 'settings', icon: <SettingOutlined />, label: 'Settings', onClick: () => setActivePage('settings') },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Navigation Bar */}
-      <nav className="fixed top-0 w-full bg-slate-900/95 backdrop-blur-lg border-b border-purple-500/20 shadow-2xl z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">AH</span>
-              </div>
-              <div className="hidden md:block">
-                <h1 className="text-xl font-bold text-white">AbrO HR</h1>
-                <p className="text-xs text-purple-300">Attendance System</p>
-              </div>
-            </div>
-
-            {/* Desktop Menu */}
-            <div className="hidden md:flex gap-8">
-              {['dashboard', 'analytics', 'employees', 'settings'].map((item) => (
-                <button
-                  key={item}
-                  onClick={() => setActivePage(item)}
-                  className={`text-sm font-medium transition-all duration-300 ${
-                    activePage === item
-                      ? 'text-purple-400 border-b-2 border-purple-400'
-                      : 'text-gray-300 hover:text-white'
-                  }`}
-                >
-                  {item.charAt(0).toUpperCase() + item.slice(1)}
-                </button>
-              ))}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
-            >
-              {sidebarOpen ? (
-                <X className="text-white" size={24} />
-              ) : (
-                <Menu className="text-white" size={24} />
-              )}
-            </button>
-          </div>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider trigger={null} collapsible collapsed={collapsed} width={220} style={{ background: '#001529' }}>
+        <div style={{ padding: '16px', textAlign: 'center' }}>
+          <h1 style={{ color: 'white', fontSize: '20px', fontWeight: 'bold', margin: 0 }}>AbrO HR</h1>
+          <p style={{ color: '#8c8c8c', fontSize: '12px', margin: '4px 0 0 0' }}>Employee Tracking</p>
         </div>
-      </nav>
-
-      {/* Mobile Sidebar */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden pt-16">
-          <div className="bg-slate-800 h-full w-64 shadow-xl p-6">
-            {['dashboard', 'analytics', 'employees', 'settings'].map((item) => (
-              <button
-                key={item}
-                onClick={() => {
-                  setActivePage(item);
-                  setSidebarOpen(false);
-                }}
-                className="block w-full text-left py-3 px-4 text-purple-300 hover:bg-purple-500/20 rounded-lg transition-colors mb-2"
-              >
-                {item.charAt(0).toUpperCase() + item.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Main Content */}
-      <main className="pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* Header Section */}
-        <div className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-3">Dashboard</h2>
-          <p className="text-purple-300 text-lg">Welcome back! Here's your attendance overview</p>
-        </div>
-
-        {/* Stats Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Present Card */}
-          <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 hover:border-green-500/60 p-6 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-500/0 to-green-500/0 group-hover:from-green-500/5 group-hover:to-green-500/10 transition-all duration-300"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-green-300 font-semibold">Present Today</h3>
-                <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <Users className="text-green-400" size={24} />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-white mb-2">0</p>
-              <p className="text-sm text-green-300/70">+0% from yesterday</p>
-            </div>
-          </div>
-
-          {/* Absent Card */}
-          <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-red-500/30 hover:border-red-500/60 p-6 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20">
-            <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 to-red-500/0 group-hover:from-red-500/5 group-hover:to-red-500/10 transition-all duration-300"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-red-300 font-semibold">Absent Today</h3>
-                <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
-                  <Clock className="text-red-400" size={24} />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-white mb-2">0</p>
-              <p className="text-sm text-red-300/70">-0% from yesterday</p>
-            </div>
-          </div>
-
-          {/* On Leave Card */}
-          <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 hover:border-blue-500/60 p-6 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-blue-500/10 transition-all duration-300"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-blue-300 font-semibold">On Leave</h3>
-                <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="text-blue-400" size={24} />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-white mb-2">0</p>
-              <p className="text-sm text-blue-300/70">Approved leaves</p>
-            </div>
-          </div>
-
-          {/* Total Employees Card */}
-          <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-500/10 to-violet-500/10 border border-purple-500/30 hover:border-purple-500/60 p-6 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-purple-500/0 group-hover:from-purple-500/5 group-hover:to-purple-500/10 transition-all duration-300"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-purple-300 font-semibold">Total Staff</h3>
-                <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <Users className="text-purple-400" size={24} />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-white mb-2">0</p>
-              <p className="text-sm text-purple-300/70">Active employees</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Features Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Coming Soon Features */}
-          <div className="rounded-xl bg-gradient-to-br from-slate-800/50 to-purple-900/50 border border-purple-500/20 p-8 hover:border-purple-500/50 transition-all duration-300">
-            <h3 className="text-2xl font-bold text-white mb-6">🚀 Features Coming Soon</h3>
-            <ul className="space-y-4">
-              {[
-                { title: 'Attendance Management', desc: 'Easy clock in/out system' },
-                { title: 'Shift Management', desc: 'Flexible shift scheduling' },
-                { title: 'Real-time Reports', desc: 'Live analytics dashboard' },
-                { title: 'Employee Profiles', desc: 'Complete employee database' },
-              ].map((feature, idx) => (
-                <li key={idx} className="flex gap-4 group cursor-pointer">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-purple-500/20 group-hover:bg-purple-500/40 transition-colors">
-                      <span className="text-purple-400 text-lg">✓</span>
-                    </div>
-                  </div>
-                  <div className="group-hover:translate-x-1 transition-transform">
-                    <p className="text-white font-semibold">{feature.title}</p>
-                    <p className="text-gray-400 text-sm mt-1">{feature.desc}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="rounded-xl bg-gradient-to-br from-slate-800/50 to-indigo-900/50 border border-indigo-500/20 p-8 hover:border-indigo-500/50 transition-all duration-300">
-            <h3 className="text-2xl font-bold text-white mb-6">⚡ Quick Actions</h3>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { icon: Clock, label: 'Clock In', color: 'green' },
-                { icon: Clock, label: 'Clock Out', color: 'red' },
-                { icon: Settings, label: 'Settings', color: 'blue' },
-                { icon: BarChart3, label: 'Reports', color: 'purple' },
-              ].map((action, idx) => {
-                const Icon = action.icon;
-                const colorClass = {
-                  green: 'hover:bg-green-500/20 border-green-500/30',
-                  red: 'hover:bg-red-500/20 border-red-500/30',
-                  blue: 'hover:bg-blue-500/20 border-blue-500/30',
-                  purple: 'hover:bg-purple-500/20 border-purple-500/30',
-                }[action.color];
-
-                return (
-                  <button
-                    key={idx}
-                    className={`p-4 rounded-lg border border-white/10 hover:border-white/30 bg-white/5 transition-all duration-300 group ${colorClass}`}
-                  >
-                    <Icon className="mx-auto mb-2 text-white group-hover:scale-110 transition-transform" size={24} />
-                    <p className="text-sm font-medium text-white">{action.label}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 p-6 text-center">
-          <p className="text-gray-300 mb-2">AbrO HR - Employee Attendance Tracking System</p>
-          <p className="text-gray-500 text-sm">© 2026 All rights reserved | Made with ❤️ for better attendance management</p>
-        </div>
-      </main>
-    </div>
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={['dashboard']}
+          items={menuItems}
+          style={{ background: '#001529' }}
+        />
+      </Sider>
+      <Layout>
+        <Header style={{ background: '#fff', padding: '0 24px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{ fontSize: '18px' }}
+          />
+          <Space size="large">
+            <Button type="text" icon={<BellOutlined style={{ fontSize: '18px' }} />} />
+            <Avatar size="large" icon={<UserOutlined />} style={{ background: '#1890ff' }} />
+            <Button type="text" icon={<LogoutOutlined />} danger />
+          </Space>
+        </Header>
+        <Content style={{ margin: '24px', background: '#f5f5f5', borderRadius: '4px', padding: '24px' }}>
+          {renderContent()}
+        </Content>
+      </Layout>
+    </Layout>
   );
 }
 
 export default App;
-
-// UI/UX Enhanced - Professional Dark Theme
