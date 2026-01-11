@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import EnhancedDashboard from './components/EnhancedDashboard';
+import EmployeeManagement from './components/EmployeeManagement';
 import './App.css';
 
 const mockUsers = {
@@ -17,6 +19,8 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
    const [settingsTab, setSettingsTab] = useState('profile');
+   const [showEnhancedAnalytics, setShowEnhancedAnalytics] = useState(false);
+  const [showEmployeePortal, setShowEmployeePortal] = useState(false);
 
   const handleLogin = (e) => {
     e.preventDefault();
