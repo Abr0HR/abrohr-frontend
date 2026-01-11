@@ -4,6 +4,8 @@ import EmployeeManagement from './components/EmployeeManagement';
 import WellnessAndEngagement from './components/WellnessAndEngagement';
 import EmployeePortal from './components/EmployeePortal';
 import AttendanceRegularization from './components/AttendanceRegularization';
+import ReportsAndDownloads from './components/ReportsAndDownloads';
+import SalaryAndCompliance from './components/SalaryAndCompliance';
 import './App.css';
 
 // Default employee data that employers can add to
@@ -289,6 +291,8 @@ function App() {
               </div>
             </div>
           )}
+           {activePage === 'reports' && <ReportsAndDownloads />}
+ {activePage === 'salary' && <SalaryAndCompliance />}
         </main>
       </div>
 
