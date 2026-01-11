@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import EnhancedDashboard from './components/EnhancedDashboard';
 import EmployeeManagement from './components/EmployeeManagement';
+import WellnessAndEngagement from './components/WellnessAndEngagement';
 import './App.css';
 
 const mockUsers = {
@@ -146,7 +147,8 @@ function App() {
           <nav className="sidebar-nav">
             <div className="nav-section">
               <h3 className="nav-title">MAIN</h3>
-              <button className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`} onClick={() => setActivePage('dashboard')}>
+              <button className={`nav-item $300
+              ? 'active' : ''}`} onClick={() => setActivePage('dashboard')}>
                 <span>📊</span> Dashboard
               </button>
               <button className={`nav-item ${activePage === 'analytics' ? 'active' : ''}`} onClick={() => setActivePage('analytics')}>
@@ -160,6 +162,9 @@ function App() {
               <button className={`nav-item ${activePage === 'settings' ? 'active' : ''}`} onClick={() => setActivePage('settings')}>
                 <span>⚙️</span> Settings
               </button>
+               <button className={`nav-item ${activePage === 'wellness' ? 'active' : ''}`} onClick={() => setActivePage('wellness')}>
+ <span>💪</span> Wellness & Engagement
+ </button>
             </div>
           </nav>
         </aside>
@@ -293,6 +298,9 @@ function App() {
                 <p className="page-subtitle">Manage your preferences and account</p>
               </div>
 <div className="settings-tabs">\n              <button className={`tab-btn ${settingsTab === 'profile' ? 'active' : ''}`} onClick={() => setSettingsTab('profile')}>👤 Profile</button>\n              <button className={`tab-btn ${settingsTab === 'security' ? 'active' : ''}`} onClick={() => setSettingsTab('security')}>🔐 Security</button>\n              <button className={`tab-btn ${settingsTab === 'preferences' ? 'active' : ''}`} onClick={() => setSettingsTab('preferences')}>⚙️ Preferences</button>\n            </div>\n            <div className="settings-content">\n              {settingsTab === 'profile' && (\n                <div className="settings-form">\n                  <h3>Profile Information</h3>\n                  <div className="form-group">\n                    <label>Full Name</label>\n                    <input type="text" defaultValue={currentUser.name} placeholder="Enter your name" className="form-input" />\n                  </div>\n                  <div className="form-group">\n                    <label>Email Address</label>\n                    <input type="email" defaultValue={email} placeholder="Enter email" className="form-input" />\n                  </div>\n                  <div className="form-group">\n                    <label>Phone Number</label>\n                    <input type="tel" placeholder="Enter phone number" className="form-input" />\n                  </div>\n                  <div className="form-group">\n                    <label>Department</label>\n                    <input type="text" placeholder="Your department" className="form-input" />\n                  </div>\n                  <button className="action-btn primary" style={{marginTop: '20px'}}>💾 Save Changes</button>\n                </div>\n              )}\n              {settingsTab === 'security' && (\n                <div className="settings-form">\n                  <h3>Security Settings</h3>\n                  <div className="form-group">\n                    <label>Current Password</label>\n                    <input type="password" placeholder="Enter current password" className="form-input" />\n                  </div>\n                  <div className="form-group">\n                    <label>New Password</label>\n                    <input type="password" placeholder="Enter new password" className="form-input" />\n                  </div>\n                  <div className="form-group">\n                    <label>Confirm Password</label>\n                    <input type="password" placeholder="Confirm new password" className="form-input" />\n                  </div>\n                  <div className="security-info">\n                    <p>✅ Password strength: Strong</p>\n                    <p>🔐 Last changed: 30 days ago</p>\n                  </div>\n                  <button className="action-btn primary" style={{marginTop: '20px'}}>🔑 Change Password</button>\n                </div>\n              )}\n              {settingsTab === 'preferences' && (\n                <div className="settings-form">\n                  <h3>User Preferences</h3>\n                  <div className="preference-item">\n                    <label>Theme</label>\n                    <select className="form-input">\n                      <option>Light Mode</option>\n                      <option>Dark Mode</option>\n                    </select>\n                  </div>\n                  <div className="preference-item">\n                    <label>Notifications</label>\n                    <div className="checkbox-group">\n                      <label><input type="checkbox" defaultChecked /> Email Notifications</label>\n                      <label><input type="checkbox" defaultChecked /> Attendance Reminders</label>\n                      <label><input type="checkbox" /> Leave Notifications</label>\n                    </div>\n                  </div>\n                  <div className="preference-item">\n                    <label>Language</label>\n                    <select className="form-input">\n                      <option>English</option>\n                      <option>Hindi</option>\n                    </select>\n                  </div>\n                  <button className="action-btn primary" style={{marginTop: '20px'}}>💾 Save Preferences</button>\n                </div>\n              )}\n            </div>
+ {activePage === 'wellness' && (
+ <WellnessAndEngagement />
+ )}
           )}
         </main>
       </div>
