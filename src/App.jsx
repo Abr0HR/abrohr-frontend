@@ -2,11 +2,12 @@ import { useState } from 'react';
 import EnhancedDashboard from './components/EnhancedDashboard';
 import EmployeeManagement from './components/EmployeeManagement';
 import WellnessAndEngagement from './components/WellnessAndEngagement';
+import EmployeePortal from './components/EmployeePortal';
 import './App.css';
 
 const mockUsers = {
-  'employer@abrohr.com': { password: 'Employer123', role: 'employer', name: 'Vikram Kumar' },
-  'employee@abrohr.com': { password: 'Employee123', role: 'employee', empid: 'EMP001', name: 'Priya Singh' }
+  'employer@abrohr.com': { password: 'Employer123', role: 'employer', name: 'Vikram Kumar', id: 'EMP_ADMIN' },
+  'employee@abrohr.com': { password: 'Employee123', role: 'employee', empid: 'EMP001', name: 'Priya Singh', id: 'EMP001', email: 'employee@abrohr.com' }
 };
 
 function App() {
@@ -84,8 +85,8 @@ function App() {
             </form>
             <div className="login-footer">
               <p className="demo-hint">Demo Accounts:</p>
-              <p className="demo-cred">Employer: employer@abrohr.com / Employer123</p>
-              <p className="demo-cred">Employee: employee@abrohr.com / Employee123</p>
+              <p className="demo-cred">👔 Employer: employer@abrohr.com / Employer123</p>
+              <p className="demo-cred">👨 Employee: employee@abrohr.com / Employee123</p>
             </div>
           </div>
         </div>
@@ -93,6 +94,57 @@ function App() {
     );
   }
 
+  // Employee Dashboard
+  if (userRole === 'employee') {
+    return (
+      <div className="app-container">
+        <header className="app-header">
+          <div className="header-left">
+            <div className="header-brand">
+              <div className="brand-icon-small">AH</div>
+              <div className="brand-text">
+                <h2>AbrO HR</h2>
+                <span>Employee Portal</span>
+              </div>
+            </div>
+          </div>
+          <div className="header-center">
+            <div className="search-box" style={{ opacity: 0.5 }}>
+              <span>👤</span>
+              <span>{currentUser?.name}</span>
+            </div>
+          </div>
+          <div className="header-right">
+            <div className="user-menu">
+              <button className="user-btn" onClick={() => setShowUserMenu(!showUserMenu)}>
+                👤 {currentUser?.name}
+              </button>
+              {showUserMenu && (
+                <div className="dropdown-menu">
+                  <a href="#">Profile</a>
+                  <a href="#">Settings</a>
+                  <hr />
+                  <button onClick={handleLogout}>Logout</button>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        <div className="main-layout">
+          <main className="main-content" style={{ width: '100%' }}>
+            <EmployeePortal currentUser={currentUser} />
+          </main>
+        </div>
+
+        <footer className="app-footer">
+          <p>&copy; 2024 AbrO HR. All rights reserved. | Employee Attendance Management System</p>
+        </footer>
+      </div>
+    );
+  }
+
+  // Employer Dashboard
   return (
     <div className="app-container">
       <header className="app-header">
