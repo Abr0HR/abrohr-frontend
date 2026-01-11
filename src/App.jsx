@@ -5,9 +5,17 @@ import WellnessAndEngagement from './components/WellnessAndEngagement';
 import EmployeePortal from './components/EmployeePortal';
 import './App.css';
 
+// Default employee data that employers can add to
+const defaultEmployees = [
+  { id: 'E001', name: 'Rajesh Kumar', dept: 'Sales', joinDate: '2020-03-15', attendance: 92, status: 'Active', email: 'rajesh@abrohr.com', phone: '9876543210' },
+  { id: 'E002', name: 'Priya Sharma', dept: 'Marketing', joinDate: '2021-06-22', attendance: 85, status: 'Active', email: 'priya@abrohr.com', phone: '9876543211' },
+  { id: 'E003', name: 'Amit Patel', dept: 'IT', joinDate: '2019-11-10', attendance: 78, status: 'Active', email: 'amit@abrohr.com', phone: '9876543212' },
+  { id: 'E004', name: 'Neha Singh', dept: 'HR', joinDate: '2022-01-05', attendance: 96, status: 'Active', email: 'neha@abrohr.com', phone: '9876543213' },
+  { id: 'E005', name: 'Vikram Malhotra', dept: 'Finance', joinDate: '2020-08-30', attendance: 88, status: 'Active', email: 'vikram@abrohr.com', phone: '9876543214' }
+];
+
 const mockUsers = {
-  'employer@abrohr.com': { password: 'Employer123', role: 'employer', name: 'Vikram Kumar', id: 'EMP_ADMIN' },
-  'employee@abrohr.com': { password: 'Employee123', role: 'employee', empid: 'EMP001', name: 'Priya Singh', id: 'EMP001', email: 'employee@abrohr.com' }
+  'employer@abrohr.com': { password: 'Employer123', role: 'employer', name: 'Vikram Kumar', id: 'EMP_ADMIN' }
 };
 
 function App() {
@@ -21,18 +29,54 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
+  // Load employees from localStorage or use defaults
+  const getEmployees = () => {
+    const savedEmployees = localStorage.getItem('abrohr_employees');
+    if (savedEmployees) {
+      try {
+        return JSON.parse(savedEmployees);
+      } catch (error) {
+        return defaultEmployees;
+      }
+    }
+    return defaultEmployees;
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
     setLoginError('');
-    const user = mockUsers[email];
-    if (user && user.password === password) {
+
+    // Check if it's an employer account
+    const employer = mockUsers[email];
+    if (employer && employer.password === password) {
       setIsLoggedIn(true);
-      setUserRole(user.role);
-      setCurrentUser(user);
+      setUserRole('employer');
+      setCurrentUser(employer);
       setActivePage('dashboard');
-    } else {
-      setLoginError('Invalid email or password');
+      return;
     }
+
+    // Check if it's an employee account
+    // Employees can login with any email from the employee database with password 'Employee123'
+    if (password === 'Employee123') {
+      const employees = getEmployees();
+      const employee = employees.find(emp => emp.email === email);
+      
+      if (employee) {
+        setIsLoggedIn(true);
+        setUserRole('employee');
+        setCurrentUser({
+          ...employee,
+          role: 'employee',
+          id: employee.id
+        });
+        setActivePage('dashboard');
+        return;
+      }
+    }
+
+    // If no match found
+    setLoginError('Invalid email or password');
   };
 
   const handleLogout = () => {
@@ -86,7 +130,8 @@ function App() {
             <div className="login-footer">
               <p className="demo-hint">Demo Accounts:</p>
               <p className="demo-cred">👔 Employer: employer@abrohr.com / Employer123</p>
-              <p className="demo-cred">👨 Employee: employee@abrohr.com / Employee123</p>
+              <p className="demo-cred">👨 Employee: Any email added in Employees section / Employee123</p>
+              <p className="demo-cred" style={{ fontSize: '12px', marginTop: '10px', color: '#64748b' }}>Example: rajesh@abrohr.com / Employee123</p>
             </div>
           </div>
         </div>
