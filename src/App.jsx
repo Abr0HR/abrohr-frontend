@@ -1,12 +1,5 @@
 import { useState } from 'react';
 import './App.css';
-import DashboardIcon from './components/icons/DashboardIcon';
-import UsersIcon from './components/icons/UsersIcon';
-import AnalyticsIcon from './components/icons/AnalyticsIcon';
-import SettingsIcon from './components/icons/SettingsIcon';
-import BellIcon from './components/icons/BellIcon';
-import SearchIcon from './components/icons/SearchIcon';
-import ChevronDownIcon from './components/icons/ChevronDownIcon';
 
 const mockUsers = {
   'employer@abrohr.com': { password: 'Employer123', role: 'employer', name: 'Vikram Kumar' },
@@ -99,15 +92,9 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* Header */}
       <header className="app-header">
         <div className="header-left">
-          <button 
-            className="sidebar-toggle"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            ☰
-          </button>
+          <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
           <div className="header-brand">
             <div className="brand-icon-small">AH</div>
             <div className="brand-text">
@@ -118,27 +105,24 @@ function App() {
         </div>
         <div className="header-center">
           <div className="search-box">
-            <SearchIcon />
+            <span>🔍</span>
             <input type="text" placeholder="Search employees..." />
           </div>
         </div>
         <div className="header-right">
           <button className="notification-btn">
-            <BellIcon />
+            <span>🔔</span>
             <span className="badge">3</span>
           </button>
           <div className="divider"></div>
           <div className="user-menu">
-            <button 
-              className="user-btn"
-              onClick={() => setShowUserMenu(!showUserMenu)}
-            >
+            <button className="user-btn" onClick={() => setShowUserMenu(!showUserMenu)}>
               <div className="user-avatar">{currentUser.name.charAt(0)}</div>
               <div className="user-info">
                 <span className="user-name">{currentUser.name}</span>
                 <span className="user-role">{userRole === 'employer' ? 'Administrator' : 'Employee'}</span>
               </div>
-              <ChevronDownIcon />
+              <span>▼</span>
             </button>
             {showUserMenu && (
               <div className="dropdown-menu">
@@ -152,52 +136,35 @@ function App() {
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="app-main">
-        {/* Sidebar */}
         <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
           <nav className="sidebar-nav">
             <div className="nav-section">
               <h3 className="nav-title">MAIN</h3>
-              <button
-                className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`}
-                onClick={() => setActivePage('dashboard')}
-              >
-                <DashboardIcon /> Dashboard
+              <button className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`} onClick={() => setActivePage('dashboard')}>
+                <span>📊</span> Dashboard
               </button>
-              <button
-                className={`nav-item ${activePage === 'analytics' ? 'active' : ''}`}
-                onClick={() => setActivePage('analytics')}
-              >
-                <AnalyticsIcon /> Analytics
+              <button className={`nav-item ${activePage === 'analytics' ? 'active' : ''}`} onClick={() => setActivePage('analytics')}>
+                <span>📈</span> Analytics
               </button>
               {userRole === 'employer' && (
-                <button
-                  className={`nav-item ${activePage === 'employees' ? 'active' : ''}`}
-                  onClick={() => setActivePage('employees')}
-                >
-                  <UsersIcon /> Employees
+                <button className={`nav-item ${activePage === 'employees' ? 'active' : ''}`} onClick={() => setActivePage('employees')}>
+                  <span>👥</span> Employees
                 </button>
               )}
-              <button
-                className={`nav-item ${activePage === 'settings' ? 'active' : ''}`}
-                onClick={() => setActivePage('settings')}
-              >
-                <SettingsIcon /> Settings
+              <button className={`nav-item ${activePage === 'settings' ? 'active' : ''}`} onClick={() => setActivePage('settings')}>
+                <span>⚙️</span> Settings
               </button>
             </div>
           </nav>
         </aside>
 
-        {/* Content Area */}
         <main className="content-area">
           {activePage === 'dashboard' && (
             <div className="page dashboard-page">
               <div className="page-header">
-                <div>
-                  <h1>Dashboard</h1>
-                  <p className="page-subtitle">Welcome back! Here's your attendance overview</p>
-                </div>
+                <h1>Dashboard</h1>
+                <p className="page-subtitle">Welcome back! Here's your attendance overview</p>
               </div>
 
               {userRole === 'employer' ? (
