@@ -3,6 +3,7 @@ import EnhancedDashboard from './components/EnhancedDashboard';
 import EmployeeManagement from './components/EmployeeManagement';
 import WellnessAndEngagement from './components/WellnessAndEngagement';
 import EmployeePortal from './components/EmployeePortal';
+import AttendanceRegularization from './components/AttendanceRegularization';
 import './App.css';
 
 // Default employee data that employers can add to
@@ -249,6 +250,18 @@ function App() {
               >
                 💚 Wellness & Engagement
               </button>
+              <button
+                  className={`nav-item ${activePage === 'regularization' ? 'active' : ''}`}
+                  onClick={() => setActivePage('regularization')}
+                >
+                  📋 Attendance Regularization
+                </button>
+               <button
+            className={`nav-item ${activePage === 'settings' ? 'active' : ''}`}
+            onClick={() => setActivePage('settings')}
+          >
+            ⚙️ Settings
+          </button>
             </div>
           </nav>
         </aside>
@@ -257,6 +270,25 @@ function App() {
           {activePage === 'dashboard' && <EnhancedDashboard />}
           {activePage === 'employees' && <EmployeeManagement />}
           {activePage === 'wellness' && <WellnessAndEngagement />}
+           {activePage === 'regularization' && <AttendanceRegularization />}
+           {activePage === 'settings' && (
+            <div style={{
+              padding: '20px',
+              backgroundColor: '#f5f5f5',
+              borderRadius: '8px',
+              maxWidth: '800px',
+              margin: '0 auto'
+            }}>
+              <h2 style={{ marginBottom: '20px', color: '#001529' }}>System Settings</h2>
+              <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
+                <h3 style={{ color: '#1890ff', marginBottom: '15px' }}>General Settings</h3>
+                <div style={{ marginBottom: '15px' }}>
+                  <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Organization Name</label>
+                  <input type="text" value="AbrO HR Systems" readOnly style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
 
