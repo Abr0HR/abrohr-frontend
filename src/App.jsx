@@ -353,7 +353,32 @@ function App() {
           </div>
         </div>
         
-            {/* NEW FEATURES SECTION V2 */}
+
+                    {/* SECURE EMPLOYEE PORTAL SECTION */}
+            <div style={{backgroundColor: '#f0f0f0', padding: '40px 20px', marginBottom: '40px', borderRadius: '8px'}}>
+              <h2 style={{textAlign: 'center', color: '#5b5bce', fontSize: '32px', marginBottom: '30px'}}>🔐 Secure Employee Portal - Enterprise Edition</h2>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '30px'}}>
+                <div style={{padding: '20px', backgroundColor: '#ffffff', borderRadius: '8px', border: '2px solid #5b5bce'}}>
+                  <h3 style={{color: '#5b5bce', marginTop: '0'}}>🔒 AES-256 Encryption</h3>
+                  <p style={{fontSize: '14px'}}>End-to-End encryption for all employee data, salary information, and sensitive records</p>
+                  <button style={{width: '100%', padding: '10px', backgroundColor: '#5b5bce', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold'}}>View Details</button>
+                </div>
+                <div style={{padding: '20px', backgroundColor: '#ffffff', borderRadius: '8px', border: '2px solid #4caf50'}}>
+                  <h3 style={{color: '#4caf50', marginTop: '0'}}>⛓️ Blockchain Security</h3>
+                  <p style={{fontSize: '14px'}}>Immutable records with SHA-256 hashing and company-level data isolation</p>
+                  <button style={{width: '100%', padding: '10px', backgroundColor: '#4caf50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold'}}>View Status</button>
+                </div>
+                <div style={{padding: '20px', backgroundColor: '#ffffff', borderRadius: '8px', border: '2px solid #ff9800'}}>
+                  <h3 style={{color: '#ff9800', marginTop: '0'}}>🏢 Company Access Control</h3>
+                  <p style={{fontSize: '14px'}}>Multi-company support with role-based access control and audit logging</p>
+                  <button style={{width: '100%', padding: '10px', backgroundColor: '#ff9800', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold'}}>Configure</button>
+                </div>
+              </div>
+              <div style={{padding: '20px', backgroundColor: '#e8f5e9', borderRadius: '8px', border: '2px solid #4caf50', textAlign: 'center'}}>
+                <h3 style={{color: '#2e7d32', margin: '0 0 10px 0'}}>✅ Enterprise-Grade Security</h3>
+                <p style={{margin: '0', fontSize: '14px'}}>🔐 AES-256 Encryption | ⛓️ Blockchain Verified | 🏢 Company Isolated | ✅ GDPR/HIPAA Compliant</p>
+              </div>
+            </div>{/* NEW FEATURES SECTION V2 */}
             <div className="features-section">
               <h2>⚡ Quick Features</h2>
               <div className="features-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', marginTop: '20px'}}>
