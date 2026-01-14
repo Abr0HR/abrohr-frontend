@@ -185,6 +185,23 @@ function App() {
               <button onClick={handleLogin} className="btn btn-primary">Sign In</button>
             </div>
           )}
+                      <div style={{textAlign: 'center', marginTop: '40px', padding: '20px'}}>
+              <h2 style={{color: '#5b5bce', fontSize: '28px', marginBottom: '20px'}}>Why Choose AbrO HR?</h2>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', maxWidth: '1000px', margin: '0 auto'}}>
+                <div style={{padding: '20px', backgroundColor: '#f8f9ff', borderRadius: '8px', border: '2px solid #5b5bce'}}>
+                  <h3 style={{color: '#5b5bce'}}>📊 Real-time Analytics</h3>
+                  <p>Track attendance and performance metrics in real-time</p>
+                </div>
+                <div style={{padding: '20px', backgroundColor: '#f8f9ff', borderRadius: '8px', border: '2px solid #5b5bce'}}>
+                  <h3 style={{color: '#5b5bce'}}>🔒 Secure & Reliable</h3>
+                  <p>Enterprise-grade security for all employee data</p>
+                </div>
+                <div style={{padding: '20px', backgroundColor: '#f8f9ff', borderRadius: '8px', border: '2px solid #5b5bce'}}>
+                  <h3 style={{color: '#5b5bce'}}>⚡ Lightning Fast</h3>
+                  <p>Optimized performance for seamless experience</p>
+                </div>
+              </div>
+            </div>
         </div>
       </div>
     );
