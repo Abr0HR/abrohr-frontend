@@ -335,6 +335,23 @@ function App() {
             </div>
           </div>
         </div>
+        
+            {/* NEW FEATURES SECTION V2 */}
+            <div className="features-section">
+              <h2>⚡ Quick Features</h2>
+              <div className="features-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', marginTop: '20px'}}>
+                {/* Dark Mode Toggle */}
+                <div className="feature-card" style={{padding: '15px', border: '1px solid #ddd', borderRadius: '8px', textAlign: 'center'}}>
+                  <h3>🌙 Dark Mode</h3>
+                  <button onClick={() => {alert('Dark Mode Activated!')}} className="feature-btn" style={{padding: '8px 12px', backgroundColor: '#5b5bce', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>Toggle</button>
+                </div>
+                {/* AI Chat */}
+                <div className="feature-card" style={{padding: '15px', border: '1px solid #ddd', borderRadius: '8px', textAlign: 'center'}}>
+                  <h3>🤖 AI Assistant</h3>
+                  <button className="feature-btn" onClick={() => alert('AI Chat: Ready to help!')} style={{padding: '8px 12px', backgroundColor: '#5b5bce', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>Open Chat</button>
+                </div>
+              </div>
+            </div>
       </div>
     );
   }
