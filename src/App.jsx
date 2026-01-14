@@ -1,415 +1,52 @@
 import { useState } from 'react';
 import './App.css';
-import EmployeeLogin from './components/EmployeeLogin';
-import EmployeePortalLoginPage from './pages/EmployeePortalLogin';
-
-// Mock Email Service (using fetch to a backend email service)
-const sendEmailNotification = async (email, company, password, adminName) => {
-  try {
-    // This would connect to a real email service like SendGrid, EmailJS, or your backend
-    console.log(`Email sent to ${email}`);
-    console.log(`Company: ${company}, Password: ${password}, Admin: ${adminName}`);
-    
-    // For now, store in localStorage with a flag that email was sent
-    const registrations = JSON.parse(localStorage.getItem('registrations') || '[]');
-    registrations.push({
-      email,
-      company,
-      password,
-      adminName,
-      emailSent: true,
-      sentDate: new Date().toISOString()
-    });
-    localStorage.setItem('registrations', JSON.stringify(registrations));
-    
-    return true;
-  } catch (error) {
-    console.error('Email sending failed:', error);
-    return false;
-  }
-};
+import LoginWithForgotPassword from './components/LoginWithForgotPassword';
 
 function App() {
-  const [currentView, setCurrentView] = useState('auth'); // auth, signup, company-dashboard, employee-dashboard
-  const [signupStep, setSignupStep] = useState(1);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState(null); // 'admin' or 'employee'
-  const [currentCompany, setCurrentCompany] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
 
-  // Form states for signup
-  const [companyData, setCompanyData] = useState({
-    name: '',
-    email: '',
-    industry: '',
-    employees: ''
-  });
-
-  const [adminData, setAdminData] = useState({
-    name: '',
-    email: ''
-  });
-
-  // Login form states
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-
-  // Employee Portal data
-  const [employees, setEmployees] = useState([
-    { id: 'E001', name: 'Rajesh Kumar', dept: 'Sales', status: 'Present', time: '09:00 AM' },
-    { id: 'E002', name: 'Priya Sharma', dept: 'Marketing', status: 'Present', time: '08:45 AM' },
-    { id: 'E003', name: 'Amit Singh', dept: 'IT', status: 'Absent', time: '-' }
-  ]);
-
-  const generatePassword = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-    let password = '';
-    for (let i = 0; i < 12; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return password;
-  };
-
-  const handleCompanySignup = async () => {
-    if (!companyData.name || !companyData.email || !companyData.industry || !companyData.employees) {
-      alert('Please fill all company details');
-      return;
-    }
-    setSignupStep(2);
-  };
-
-  const handleAdminSignup = async () => {
-    if (!adminData.name || !adminData.email) {
-      alert('Please fill all admin details');
-      return;
-    }
-
-    const generatedPassword = generatePassword();
-    
-    // Send email notification
-    await sendEmailNotification(
-      adminData.email,
-      companyData.name,
-      generatedPassword,
-      adminData.name
-    );
-
-    // Store company data
-    const companies = JSON.parse(localStorage.getItem('companies') || '{}');
-    companies[companyData.email] = {
-      ...companyData,
-      ...adminData,
-      password: generatedPassword,
-      createdAt: new Date().toISOString()
-    };
-    localStorage.setItem('companies', JSON.stringify(companies));
-
-    // Show confirmation
-    alert(`✅ Registration Successful!\n\nAn email has been sent to ${adminData.email} with login credentials.\n\nPassword: ${generatedPassword}`);
-    setSignupStep(1);
-    setCompanyData({ name: '', email: '', industry: '', employees: '' });
-    setAdminData({ name: '', email: '' });
-    setCurrentView('auth');
-  };
-
-  const handleLogin = () => {
-    if (!loginEmail || !loginPassword) {
-      alert('Please enter email and password');
-      return;
-    }
-
-    const companies = JSON.parse(localStorage.getItem('companies') || '{}');
-    const company = companies[loginEmail];
-
-    if (company && company.password === loginPassword) {
-      setIsLoggedIn(true);
-      setUserRole('admin');
-      setCurrentCompany(company);
-      setCurrentUser(company.name);
-      setCurrentView('company-dashboard');
-    } else {
-      alert('Invalid credentials');
-    }
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserRole(null);
-    setCurrentCompany(null);
-    setCurrentUser(null);
-    setLoginEmail('');
-    setLoginPassword('');
-    setCurrentView('auth');
-  };
-
-  // View: Authentication/Main Screen
-  if (!isLoggedIn && currentView === 'auth') {
+  // Check if user is already logged in
+  if (localStorage.getItem('isLoggedIn') === 'true') {
+    const userRole = localStorage.getItem('userRole');
     return (
-      <div className="app-container">
-        <div className="auth-card">
-          <div className="logo">
-            <div className="logo-circle">AH</div>
-          </div>
-          <h1>AbrO HR</h1>
-          <p className="tagline">Professional Attendance & HR Management System</p>
-
-          <div className="auth-tabs">
-            <button 
-              className={`tab-btn ${currentView === 'auth' ? 'active' : ''}`}
-              onClick={() => setCurrentView('auth')}
-            >
-              Sign In
-            </button>
-            <button 
-              className="tab-btn"
-              onClick={() => { setCurrentView('signup'); setSignupStep(1); }}
-            >
-              New Company
-            </button>
-          </div>
-
-          {currentView === 'auth' && (
-            <div className="login-form">
-              <input
-                type="email"
-                placeholder="Company Email"
-                value={loginEmail}
-                onChange={(e) => setLoginEmail(e.target.value)}
-                className="form-input"
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                className="form-input"
-              />
-              <button onClick={handleLogin} className="btn btn-primary">Sign In</button>
-            </div>
-          )}
-                      <div style={{textAlign: 'center', marginTop: '40px', padding: '20px'}}>
-              <h2 style={{color: '#5b5bce', fontSize: '28px', marginBottom: '20px'}}>Why Choose AbrO HR?</h2>
-              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', maxWidth: '1000px', margin: '0 auto'}}>
-                <div style={{padding: '20px', backgroundColor: '#f8f9ff', borderRadius: '8px', border: '2px solid #5b5bce'}}>
-                  <h3 style={{color: '#5b5bce'}}>📊 Real-time Analytics</h3>
-                  <p>Track attendance and performance metrics in real-time</p>
-                </div>
-                <div style={{padding: '20px', backgroundColor: '#f8f9ff', borderRadius: '8px', border: '2px solid #5b5bce'}}>
-                  <h3 style={{color: '#5b5bce'}}>🔒 Secure & Reliable</h3>
-                  <p>Enterprise-grade security for all employee data</p>
-                </div>
-                <div style={{padding: '20px', backgroundColor: '#f8f9ff', borderRadius: '8px', border: '2px solid #5b5bce'}}>
-                  <h3 style={{color: '#5b5bce'}}>⚡ Lightning Fast</h3>
-                  <p>Optimized performance for seamless experience</p>
-                </div>
-              </div>
-            </div>
-        </div>
+      <div style={styles.container}>
+        <h1>Dashboard</h1>
+        <p>Welcome, {userRole}!</p>
+        <button onClick={() => {
+          localStorage.clear();
+          window.location.reload();
+        }} style={styles.logoutButton}>
+          Logout
+        </button>
       </div>
     );
   }
 
-  // View: Company Signup
-  if (currentView === 'signup') {
-    return (
-      <div className="app-container">
-        <div className="signup-card">
-          <div className="logo">
-            <div className="logo-circle">AH</div>
-          </div>
-          <h1>Register Your Company</h1>
-          <p className="step-indicator">Step {signupStep} of 2</p>
-
-          {signupStep === 1 && (
-            <div className="signup-form">
-              <h2>Company Information</h2>
-              <input
-                type="text"
-                placeholder="Company Name"
-                value={companyData.name}
-                onChange={(e) => setCompanyData({...companyData, name: e.target.value})}
-                className="form-input"
-              />
-              <input
-                type="email"
-                placeholder="Company Email"
-                value={companyData.email}
-                onChange={(e) => setCompanyData({...companyData, email: e.target.value})}
-                className="form-input"
-              />
-              <select 
-                value={companyData.industry}
-                onChange={(e) => setCompanyData({...companyData, industry: e.target.value})}
-                className="form-input"
-              >
-                <option value="">Select Industry</option>
-                <option value="IT">IT & Software</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Retail">Retail</option>
-                <option value="Finance">Finance</option>
-                <option value="Other">Other</option>
-              </select>
-              <input
-                type="number"
-                placeholder="Expected Employees"
-                value={companyData.employees}
-                onChange={(e) => setCompanyData({...companyData, employees: e.target.value})}
-                className="form-input"
-              />
-              <button onClick={handleCompanySignup} className="btn btn-primary">Next →</button>
-              <button onClick={() => setCurrentView('auth')} className="btn btn-secondary">Back</button>
-            </div>
-          )}
-
-          {signupStep === 2 && (
-            <div className="signup-form">
-              <h2>Admin Account Details</h2>
-              <input
-                type="text"
-                placeholder="Admin Full Name"
-                value={adminData.name}
-                onChange={(e) => setAdminData({...adminData, name: e.target.value})}
-                className="form-input"
-              />
-              <input
-                type="email"
-                placeholder="Admin Email"
-                value={adminData.email}
-                onChange={(e) => setAdminData({...adminData, email: e.target.value})}
-                className="form-input"
-              />
-              <p className="info-text">Password will be automatically generated and sent to your email</p>
-              <button onClick={handleAdminSignup} className="btn btn-success">Complete Registration</button>
-              <button onClick={() => setSignupStep(1)} className="btn btn-secondary">Back</button>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // View: Company Dashboard (Admin Portal)
-  if (isLoggedIn && currentView === 'company-dashboard') {
-    return (
-      <div className="app-container">
-        <div className="dashboard-container">
-          <div className="dashboard-header">
-            <div className="header-left">
-              <h1>Welcome, {currentUser}</h1>
-              <p>Company Dashboard</p>
-            </div>
-            <div className="header-right">
-              <button onClick={handleLogout} className="btn btn-logout">Logout</button>
-            </div>
-          </div>
-
-          <div className="dashboard-content">
-            <div className="card">
-              <h2>🎨 Employee Attendance</h2>
-              <table className="employees-table">
-                <thead>
-                  <tr>
-                    <th>Employee ID</th>
-                    <th>Name</th>
-                    <th>Department</th>
-                    <th>Status</th>
-                    <th>Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {employees.map(emp => (
-                    <tr key={emp.id}>
-                      <td>{emp.id}</td>
-                      <td>{emp.name}</td>
-                      <td>{emp.dept}</td>
-                      <td><span className={`badge ${emp.status.toLowerCase()}`}>{emp.status}</span></td>
-                      <td>{emp.time}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="card">
-              <h2>📄 Company Details</h2>
-              <div className="details-grid">
-                <div className="detail-item">
-                  <span className="label">Company Name:</span>
-                  <span className="value">{currentCompany.name}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="label">Email:</span>
-                  <span className="value">{currentCompany.email}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="label">Industry:</span>
-                  <span className="value">{currentCompany.industry}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="label">Expected Employees:</span>
-                  <span className="value">{currentCompany.employees}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-
-                    {/* SECURE EMPLOYEE PORTAL SECTION */}
-            <div style={{backgroundColor: '#f0f0f0', padding: '40px 20px', marginBottom: '40px', borderRadius: '8px'}}>
-              <h2 style={{textAlign: 'center', color: '#5b5bce', fontSize: '32px', marginBottom: '30px'}}>🔐 Secure Employee Portal - Enterprise Edition</h2>
-              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '30px'}}>
-                <div style={{padding: '20px', backgroundColor: '#ffffff', borderRadius: '8px', border: '2px solid #5b5bce'}}>
-                  <h3 style={{color: '#5b5bce', marginTop: '0'}}>🔒 AES-256 Encryption</h3>
-                  <p style={{fontSize: '14px'}}>End-to-End encryption for all employee data, salary information, and sensitive records</p>
-                  <button style={{width: '100%', padding: '10px', backgroundColor: '#5b5bce', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold'}}>View Details</button>
-                </div>
-                <div style={{padding: '20px', backgroundColor: '#ffffff', borderRadius: '8px', border: '2px solid #4caf50'}}>
-                  <h3 style={{color: '#4caf50', marginTop: '0'}}>⛓️ Blockchain Security</h3>
-                  <p style={{fontSize: '14px'}}>Immutable records with SHA-256 hashing and company-level data isolation</p>
-                  <button style={{width: '100%', padding: '10px', backgroundColor: '#4caf50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold'}}>View Status</button>
-                </div>
-                <div style={{padding: '20px', backgroundColor: '#ffffff', borderRadius: '8px', border: '2px solid #ff9800'}}>
-                  <h3 style={{color: '#ff9800', marginTop: '0'}}>🏢 Company Access Control</h3>
-                  <p style={{fontSize: '14px'}}>Multi-company support with role-based access control and audit logging</p>
-                  <button style={{width: '100%', padding: '10px', backgroundColor: '#ff9800', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold'}}>Configure</button>
-                </div>
-              </div>
-              <div style={{padding: '20px', backgroundColor: '#e8f5e9', borderRadius: '8px', border: '2px solid #4caf50', textAlign: 'center'}}>
-                <h3 style={{color: '#2e7d32', margin: '0 0 10px 0'}}>✅ Enterprise-Grade Security</h3>
-                <p style={{margin: '0', fontSize: '14px'}}>🔐 AES-256 Encryption | ⛓️ Blockchain Verified | 🏢 Company Isolated | ✅ GDPR/HIPAA Compliant</p>
-              </div>
-            </div>{/* NEW FEATURES SECTION V2 */}
-            <div className="features-section">
-              <h2>⚡ Quick Features</h2>
-              <div className="features-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', marginTop: '20px'}}>
-                {/* Dark Mode Toggle */}
-                <div className="feature-card" style={{padding: '15px', border: '1px solid #ddd', borderRadius: '8px', textAlign: 'center'}}>
-                  <h3>🌙 Dark Mode</h3>
-                  <button onClick={() => {alert('Dark Mode Activated!')}} className="feature-btn" style={{padding: '8px 12px', backgroundColor: '#5b5bce', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>Toggle</button>
-                </div>
-                {/* AI Chat */}
-                <div className="feature-card" style={{padding: '15px', border: '1px solid #ddd', borderRadius: '8px', textAlign: 'center'}}>
-                  <h3>🤖 AI Assistant</h3>
-                  <button className="feature-btn" onClick={() => alert('AI Chat: Ready to help!')} style={{padding: '8px 12px', backgroundColor: '#5b5bce', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>Open Chat</button>
-                </div>
-              </div>
-            </div>
-      </div>
-                {/* Employee Login Section */}
-                <EmployeePortalLoginPage />
-        
-    <div style={{backgroundColor: '#f0f0f0', padding: '40px 20px', marginTop: '40px', borderRadius: '8px'}}>
-              <EmployeeLogin 
-                onLoginSuccess={(employee) => alert(`Welcome ${employee.name}! Your data is encrypted and blockchain verified.`)}
-                onShowSecurePortal={() => alert('🔐 Opening Secure Employee Portal with AES-256 Encryption & Blockchain Verification...')}
-              />
-            </div>
-    );
-  }
-
-  return null;
+  return <LoginWithForgotPassword />;
 }
+
+const styles = {
+  container: {
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    color: 'white',
+    fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+  },
+  logoutButton: {
+    padding: '10px 20px',
+    background: 'white',
+    color: '#667eea',
+    border: 'none',
+    borderRadius: '6px',
+    fontSize: '16px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    marginTop: '20px',
+  },
+};
 
 export default App;
