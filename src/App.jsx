@@ -1,8 +1,8 @@
-import EmployeePortalLoginPage from './pages/EmployeePortalLogin';
+import CompleteLandingPage from './pages/CompleteLandingPage';
 import './App.css';
 
 function App() {
-  return <EmployeePortalLoginPage />;
+  return <CompleteLandingPage />;
 }
 
 export default App;
