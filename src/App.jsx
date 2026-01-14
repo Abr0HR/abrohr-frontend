@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './App.css';
+import EmployeeLogin from './components/EmployeeLogin';
 
 // Mock Email Service (using fetch to a backend email service)
 const sendEmailNotification = async (email, company, password, adminName) => {
@@ -395,6 +396,13 @@ function App() {
               </div>
             </div>
       </div>
+                {/* Employee Login Section */}
+            <div style={{backgroundColor: '#f0f0f0', padding: '40px 20px', marginTop: '40px', borderRadius: '8px'}}>
+              <EmployeeLogin 
+                onLoginSuccess={(employee) => alert(`Welcome ${employee.name}! Your data is encrypted and blockchain verified.`)}
+                onShowSecurePortal={() => alert('🔐 Opening Secure Employee Portal with AES-256 Encryption & Blockchain Verification...')}
+              />
+            </div>
     );
   }
 
