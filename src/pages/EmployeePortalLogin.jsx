@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+85
+  85
+    import React, { useState } from 'react';
+import FunctionalDashboard from '../components/FunctionalDashboard';
 
 const EmployeePortalLoginPage = () => {
   const [email, setEmail] = useState('');
@@ -81,42 +84,10 @@ const EmployeePortalLoginPage = () => {
     setPassword('');
   };
 
+  87
   if (isLoggedIn && employeeData) {
-    return (
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ background: 'white', padding: '40px', borderRadius: '12px', maxWidth: '700px', width: '100%', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
-          <h1 style={{ color: '#667eea', textAlign: 'center', margin: '0 0 30px 0' }}>✅ Welcome, {employeeData.name}! 👋</h1>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '30px' }}>
-            <div style={{ background: '#f0f4ff', padding: '20px', borderRadius: '8px' }}>
-              <p style={{ color: '#999', fontSize: '12px', margin: '0' }}>EMPLOYEE ID</p>
-              <p style={{ color: '#667eea', fontWeight: 'bold', fontSize: '18px', margin: '5px 0 0 0' }}>{employeeData.id}</p>
-            </div>
-            <div style={{ background: '#f0f4ff', padding: '20px', borderRadius: '8px' }}>
-              <p style={{ color: '#999', fontSize: '12px', margin: '0' }}>COMPANY</p>
-              <p style={{ color: '#667eea', fontWeight: 'bold', fontSize: '18px', margin: '5px 0 0 0' }}>{employeeData.company}</p>
-            </div>
-            <div style={{ background: '#f0f4ff', padding: '20px', borderRadius: '8px' }}>
-              <p style={{ color: '#999', fontSize: '12px', margin: '0' }}>POSITION</p>
-              <p style={{ color: '#667eea', fontWeight: 'bold', fontSize: '18px', margin: '5px 0 0 0' }}>{employeeData.position}</p>
-            </div>
-            <div style={{ background: '#f0f4ff', padding: '20px', borderRadius: '8px' }}>
-              <p style={{ color: '#999', fontSize: '12px', margin: '0' }}>DEPARTMENT</p>
-              <p style={{ color: '#667eea', fontWeight: 'bold', fontSize: '18px', margin: '5px 0 0 0' }}>{employeeData.department}</p>
-            </div>
-          </div>
-          <div style={{ background: '#e8f5e9', padding: '20px', borderRadius: '8px', marginBottom: '20px', border: '2px solid #4caf50' }}>
-            <p style={{ color: '#2e7d32', margin: '0', fontWeight: 'bold' }}>🔐 Your data is protected with AES-256 Encryption & Blockchain Verification</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-            <button style={{ background: '#667eea', color: 'white', border: 'none', padding: '12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>📊 View Payslips</button>
-            <button style={{ background: '#4caf50', color: 'white', border: 'none', padding: '12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>✈️ Leave Management</button>
-            <button style={{ background: '#ff9800', color: 'white', border: 'none', padding: '12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>⭐ Performance Review</button>
-            <button onClick={handleLogout} style={{ background: '#f44336', color: 'white', border: 'none', padding: '12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>🚪 Logout</button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+return <FunctionalDashboard employeeData={employeeData} onLogout={handleLogout} />;
+      }
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
