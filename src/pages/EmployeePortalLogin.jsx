@@ -1,8 +1,4 @@
-// Functional Dashboard Integration Ready
-85
-  85
-    import React, { useState } from 'react';
-import FunctionalDashboard from '../components/FunctionalDashboard';
+import React, { useState } from 'react';
 
 const EmployeePortalLoginPage = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +7,6 @@ const EmployeePortalLoginPage = () => {
   const [employeeData, setEmployeeData] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
 
   const employees = [
     { id: 'EMP001', email: 'john@abrohr.com', password: 'john123', name: 'John Doe', company: 'Tech Corp', position: 'Developer', department: 'Engineering' },
@@ -20,32 +15,14 @@ const EmployeePortalLoginPage = () => {
     { id: 'EMP004', email: 'admin@abrohr.com', password: 'Admin@123', name: 'Admin User', company: 'AbrO HR', position: 'Administrator', department: 'Admin' }
   ];
 
-  const validateLoginForm = () => {
-    if (!email.trim()) {
-      setError('⚠️ Please enter your email address');
-      return false;
-    }
-    if (!password.trim()) {
-      setError('⚠️ Please enter your password');
-      return false;
-    }
-    if (!email.includes('@')) {
-      setError('⚠️ Please enter a valid email address');
-      return false;
-    }
-    return true;
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (!validateLoginForm()) {
+    if (!email.trim() || !password.trim()) {
+      setError('⚠️ Please enter email and password');
       return;
     }
-
     setIsLoading(true);
-    // Simulate API call
     setTimeout(() => {
       const emp = employees.find(e => e.email === email && e.password === password);
       if (emp) {
@@ -55,7 +32,7 @@ const EmployeePortalLoginPage = () => {
         setEmail('');
         setPassword('');
       } else {
-        setError('❌ Invalid email or password. Please try again.');
+        setError('❌ Invalid email or password');
       }
       setIsLoading(false);
     }, 1000);
@@ -64,31 +41,48 @@ const EmployeePortalLoginPage = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setEmployeeData(null);
-    setEmail('');
-    setPassword('');
-    setError('');
-    setShowSignUp(false);
   };
 
-  const handleNavigateToForgotPassword = () => {
-    setEmail('');
-    setPassword('');
-    setError('');
-    // Trigger navigation to forgot password page
-    window.location.href = '/#forgot-password';
-  };
-
-  const handleNavigateToSignUp = () => {
-    setShowSignUp(true);
-    setError('');
-    setEmail('');
-    setPassword('');
-  };
-
-  87
   if (isLoggedIn && employeeData) {
-return <FunctionalDashboard employeeData={employeeData} onLogout={handleLogout} />;
-      }
+    return (
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ background: 'white', padding: '40px', borderRadius: '12px', maxWidth: '600px', width: '100%', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
+          <h1 style={{ color: '#667eea', marginBottom: '10px' }}>Welcome, {employeeData.name}! 👋</h1>
+          <p style={{ color: '#999', marginBottom: '30px' }}>Employee Portal Dashboard</p>
+          
+          <div style={{ marginBottom: '20px' }}>
+            <div style={{ background: '#f0f4ff', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
+              <p style={{ color: '#999', fontSize: '12px', margin: '0' }}>EMPLOYEE ID</p>
+              <p style={{ color: '#667eea', fontWeight: 'bold', fontSize: '16px', margin: '5px 0' }}>{employeeData.id}</p>
+            </div>
+            <div style={{ background: '#f0f4ff', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
+              <p style={{ color: '#999', fontSize: '12px', margin: '0' }}>COMPANY</p>
+              <p style={{ color: '#667eea', fontWeight: 'bold', fontSize: '16px', margin: '5px 0' }}>{employeeData.company}</p>
+            </div>
+            <div style={{ background: '#f0f4ff', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
+              <p style={{ color: '#999', fontSize: '12px', margin: '0' }}>POSITION</p>
+              <p style={{ color: '#667eea', fontWeight: 'bold', fontSize: '16px', margin: '5px 0' }}>{employeeData.position}</p>
+            </div>
+            <div style={{ background: '#f0f4ff', padding: '15px', borderRadius: '8px' }}>
+              <p style={{ color: '#999', fontSize: '12px', margin: '0' }}>DEPARTMENT</p>
+              <p style={{ color: '#667eea', fontWeight: 'bold', fontSize: '16px', margin: '5px 0' }}>{employeeData.department}</p>
+            </div>
+          </div>
+
+          <div style={{ background: '#e8f5e9', padding: '15px', borderRadius: '6px', border: '2px solid #4caf50', textAlign: 'center', marginBottom: '20px' }}>
+            <p style={{ color: '#2e7d32', margin: '0', fontSize: '13px' }}>🔐 Secure Login | 🔒 Encrypted | ⛓️ Blockchain Verified</p>
+          </div>
+
+          <button 
+            onClick={handleLogout}
+            style={{ width: '100%', padding: '14px', background: '#f44336', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', marginBottom: '20px' }}
+          >
+            🚪 Logout
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -107,7 +101,6 @@ return <FunctionalDashboard employeeData={employeeData} onLogout={handleLogout} 
               style={{ width: '100%', padding: '12px', border: '2px solid #ddd', borderRadius: '6px', fontSize: '16px', boxSizing: 'border-box' }}
             />
           </div>
-
           <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#333' }}>Password</label>
             <input 
@@ -118,9 +111,7 @@ return <FunctionalDashboard employeeData={employeeData} onLogout={handleLogout} 
               style={{ width: '100%', padding: '12px', border: '2px solid #ddd', borderRadius: '6px', fontSize: '16px', boxSizing: 'border-box' }}
             />
           </div>
-
           {error && <p style={{ background: '#ffebee', color: '#c62828', padding: '12px', borderRadius: '6px', marginBottom: '20px', border: '2px solid #f44336' }}>{error}</p>}
-
           <button 
             type="submit" 
             disabled={isLoading}
@@ -129,20 +120,6 @@ return <FunctionalDashboard employeeData={employeeData} onLogout={handleLogout} 
             {isLoading ? '🔄 Logging in...' : '🔓 Login to Portal'}
           </button>
         </form>
-
-        <button 
-          onClick={handleNavigateToForgotPassword}
-          style={{ width: '100%', padding: '12px', background: 'white', color: '#667eea', border: '2px solid #667eea', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '10px' }}
-        >
-          🔑 Forgot Password?
-        </button>
-
-        <button 
-          onClick={handleNavigateToSignUp}
-          style={{ width: '100%', padding: '12px', background: '#4caf50', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '20px' }}
-        >
-          ✨ Create New Account
-        </button>
 
         <div style={{ background: '#fff3cd', padding: '15px', borderRadius: '6px', marginBottom: '20px', border: '2px solid #ffc107' }}>
           <p style={{ color: '#856404', margin: '5px 0', fontWeight: 'bold' }}>📋 Test Credentials:</p>
