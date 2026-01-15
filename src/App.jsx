@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import CompleteLandingPage from './pages/CompleteLandingPage';
 import EmployeePortalLogin from './pages/EmployeePortalLogin';
+import EmployeeRegistrationPage from './pages/EmployeeRegistrationPage';
+import CompanyRegistrationPage from './pages/CompanyRegistrationPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import PasswordResetPage from './pages/PasswordResetPage';
 import './App.css';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('landing'); // 'landing', 'login', 'forgot-password', 'reset-password'
+  const [currentPage, setCurrentPage] = useState('landing');
   const [resetEmail, setResetEmail] = useState('');
 
   const handleNavigate = (page, email = '') => {
@@ -22,6 +24,10 @@ function App() {
     
     if (path === '/login') {
       setCurrentPage('login');
+    } else if (path === '/register') {
+      setCurrentPage('employee-register');
+    } else if (path === '/company-register') {
+      setCurrentPage('company-register');
     } else if (path === '/forgot-password') {
       setCurrentPage('forgot-password');
     } else if (path === '/reset-password') {
@@ -38,6 +44,10 @@ function App() {
     switch (currentPage) {
       case 'login':
         return <EmployeePortalLogin />;
+      case 'employee-register':
+        return <EmployeeRegistrationPage />;
+      case 'company-register':
+        return <CompanyRegistrationPage />;
       case 'forgot-password':
         return <ForgotPasswordPage />;
       case 'reset-password':
